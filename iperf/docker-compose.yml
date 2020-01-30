@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  iperf-server:
+    build:
+      context: iperf3
+      dockerfile: Dockerfile
+    container_name: "iperf-server"
+    ports:
+      - "50001:5001/tcp"
+      - "50001:5001/udp"
+    dns_search: .
+    command: iperf3 -s -p 5001
+  iperf-client:
+    build:
+      context: iperf3
+      dockerfile: Dockerfile
+    container_name: "iperf-client"
+    dns_search: .
+    command: iperf3 -c iperf-server -p 5001 -4
+  iperf-client-reverse:
+    build:
+      context: iperf3
+      dockerfile: Dockerfile
+    container_name: "iperf-client-reverse"
+    dns_search: .
+    command: iperf3 -c iperf-server -p 5001 -4 -R

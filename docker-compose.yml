@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  iperf-server:
+    build:
+      context: iperf
+      dockerfile: Dockerfile
+    container_name: "iperf-server"
+    ports:
+      - "50001:5001/tcp"
+      - "50001:5001/udp"
+    dns_search: .
+    command: iperf3 -s -p 5001
+  iperf-client:
+    build:
+      context: iperf
+      dockerfile: Dockerfile
+    container_name: "iperf-client"
+    dns_search: .
+    command: iperf3 -c iperf-server -p 5001 -4
+  iperf-client-reverse:
+    build:
+      context: iperf
+      dockerfile: Dockerfile
+    container_name: "iperf-client-reverse"
+    dns_search: .
+    command: iperf3 -c iperf-server -p 5001 -4 -R
+  ooniprobe-test:
+    build:
+      context: ooniprobe
+      dockerfile: Dockerfile
+    container_name: "ooniprobe-test"
+    volumes:
+      - ./ooniprobe/config:/home/appuser/.ooniprobe
+    dns_search: .
+    command: ooniprobe run performance
+  ooniprobe-results:
+    build:
+      context: ooniprobe
+      dockerfile: Dockerfile
+    container_name: "ooniprobe-results"
+    volumes:
+      - ./ooniprobe/config:/home/appuser/.ooniprobe
+    dns_search: .
+    command: ooniprobe list

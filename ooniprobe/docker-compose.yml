@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  ooniprobe-test:
+    build:
+      context: ooniprobe3
+      dockerfile: Dockerfile
+    container_name: "ooniprobe-test"
+    volumes:
+      - ./config:/home/appuser/.ooniprobe
+    dns_search: .
+    command: ooniprobe run performance
+  ooniprobe-results:
+    build:
+      context: ooniprobe3
+      dockerfile: Dockerfile
+    container_name: "ooniprobe-results"
+    volumes:
+      - ./config:/home/appuser/.ooniprobe
+    dns_search: .
+    command: ooniprobe list
